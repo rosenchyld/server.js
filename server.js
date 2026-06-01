@@ -3,7 +3,7 @@ const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 const cors = require('cors');
 const app = express();
 
-app.use(cors());
+app.use(cors({ origin: '*' }));
 app.use(express.json());
 
 app.post('/create-checkout', async (req, res) => {
@@ -28,8 +28,11 @@ app.post('/create-checkout', async (req, res) => {
     });
     res.json({ url: session.url });
   } catch (err) {
+    console.error(err);
     res.status(500).json({ error: err.message });
   }
 });
 
-app.listen(process.env.PORT || 3000);
+app.get('/', (req, res) => res.send('Memory Lab Checkout Running'));
+
+app.listen(process.env.PORT || 3000, () => console.log('Server running'));
